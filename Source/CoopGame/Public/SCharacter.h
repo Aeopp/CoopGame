@@ -18,10 +18,13 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UPROPERTY(EditAnywhere ,   BlueprintReadWrite  ,  Category =  Camera) 
+	class   UCameraComponent * CameraComp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera)
+	class USpringArmComponent* SpringArm;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent
@@ -34,5 +37,8 @@ public:
 		void LookUp(float Value);
 	UFUNCTION()
 		void TurnAround(float Value);
-	
+	UFUNCTION()
+		void BeginCrouch();
+	UFUNCTION()
+		void EndCrouch();
 };

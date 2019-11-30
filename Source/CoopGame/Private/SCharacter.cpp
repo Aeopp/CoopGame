@@ -1,16 +1,26 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Public/SCharacter.h"
-
-
-
+#include "Classes/Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 // Sets default values
 ASCharacter::ASCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
-	AutoPossessPlayer = EAutoReceiveInput::Player0; 
+	AutoPossessPlayer = EAutoReceiveInput::Player0;
+	this->SpringArm = CreateDefaultSubobject<USpringArmComponent >(TEXT("SpringArmComp"));
+	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->TargetArmLength = 100.f;
+	SpringArm->bUsePawnControlRotation = true;
+	this->CameraComp  =   CreateDefaultSubobject<UCameraComponent >(TEXT("CameraComp  "));
+	CameraComp->bUsePawnControlRotation = true;
+	CameraComp->SetupAttachment(SpringArm);
+	  
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
+	
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +49,12 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	&ASCharacter::LookUp);
 	PlayerInputComponent->BindAxis("TurnAround", this,
 	&ASCharacter::TurnAround);
+	PlayerInputComponent->BindAction("Crouch" , EInputEvent::IE_Pressed, this,
+	&ASCharacter::BeginCrouch);
+	PlayerInputComponent->BindAction("Crouch", EInputEvent::IE_Released, this,
+		&ASCharacter::EndCrouch);
+	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this,
+		&ASCharacter::Jump);
 }
 
 void ASCharacter::MoveForward(float Value)
@@ -63,5 +79,17 @@ void ASCharacter::TurnAround(float Value)
 {
 	if(! FMath::IsNearlyZero(     Value   ))   
 	AddControllerYawInput(Value);
+}
+
+void ASCharacter::BeginCrouch()
+{
+	Crouch();
+	
+}
+
+void ASCharacter::EndCrouch()
+{
+	UnCrouch();
+	
 }
 
