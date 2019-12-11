@@ -41,4 +41,6 @@ protected:
 		void BeginCrouch();
 	UFUNCTION()
 		void EndCrouch();
+
+	 virtual FVector GetPawnViewLocation() const override; 
 };

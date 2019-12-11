@@ -84,12 +84,20 @@ void ASCharacter::TurnAround(float Value)
 void ASCharacter::BeginCrouch()
 {
 	Crouch();
-	
 }
 
 void ASCharacter::EndCrouch()
 {
 	UnCrouch();
-	
+}
+
+FVector ASCharacter::GetPawnViewLocation() const
+{
+	if (CameraComp)
+	{
+		return CameraComp->GetComponentLocation(); 
+	};
+
+	return Super::GetPawnViewLocation();
 }
 
